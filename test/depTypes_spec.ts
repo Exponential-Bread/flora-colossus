@@ -7,7 +7,7 @@ describe('depTypes', () => {
     it('should contain unique numbers', () => {
       expect(
         Object.keys(DepType)
-          .map(key => DepType[key])
+          .map(key => DepType[key as unknown as keyof typeof DepType])
           .filter(value => typeof value === 'number').length,
       ).to.equal(5);
     });

@@ -4,6 +4,7 @@ import { expect } from 'chai';
 import { Module, Walker } from '../src/Walker';
 import { DepType } from '../src/depTypes';
 import { NativeModuleType } from '../src/nativeModuleTypes';
+import { readFileSync } from 'fs';
 
 async function buildWalker(modulePath: string): Promise<Module[]> {
   const walker = new Walker(modulePath);
@@ -92,12 +93,22 @@ describe('Walker', () => {
 
     it('should detect the hoisted and unhoisted instances correctly as optional/dev', () => {
       const xmlBuilderModules = modules.filter(m => m.name === 'xmlbuilder');
-      // versions tested come from the lockfile, 8.2.2 is the version depended upon by plist@2.x
-      const expectedDev = xmlBuilderModules.find(m => m.path.includes('8.2.2'));
-      // versions tested come from the lockfile, 9.0.7 is the version transitively depended upon by xml2js and plist@3.x
-      const expectedOptional = xmlBuilderModules.find(m =>
-        m.path.includes('9.0.7'),
+      const modulesByPackage = xmlBuilderModules.map(
+        v =>
+          [
+            v,
+            JSON.parse(readFileSync(v.path + '/package.json', 'utf-8')),
+          ] as const,
       );
+      // versions tested come from the lockfile, 8.2.2 is the version depended upon by plist@2.x
+      const expectedDev = modulesByPackage.find(
+        ([_module, pkg]) => pkg.version === '8.2.2',
+      )?.[0];
+      // versions tested come from the lockfile, 9.0.7 is the version transitively depended upon by xml2js and plist@3.x
+      const expectedOptional = modulesByPackage.find(
+        ([_module, pkg]) => pkg.version === '9.0.7',
+      )?.[0];
+
       expect(expectedDev).to.have.property('depType', DepType.DEV);
       expect(expectedOptional).to.have.property('depType', DepType.OPTIONAL);
     });
