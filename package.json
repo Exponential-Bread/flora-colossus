@@ -1,5 +1,5 @@
 {
-  "name": "@3xpo/flora-colossus",
+  "name": "flora-colossus",
   "version": "2.1.1",
   "description": "Walks your node_modules tree",
   "author": "Samuel Attard",
@@ -42,7 +42,8 @@
     "test:pnpm": "npm run pretest:pnpm && npm run test-pkg",
     "test:yarn": "npm run pretest:yarn && npm run test-pkg",
     "release": "changelogen --release",
-    "prepublishOnly": "git push && git push --tags && npm run build && npm run test"
+    "prepublishOnly": "node publish-script --pre && git push && git push --tags && npm run build && npm run test",
+    "postpublish": "node publish-script --post"
   },
   "dependencies": {
     "debug": "^4.3.4",
