@@ -57,6 +57,7 @@
     "chai": "^4.3.10",
     "changelogen": "^0.5.5",
     "concurrently": "^8.2.2",
+    "esbuild": "^0.19.5",
     "mocha": "^10.2.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
