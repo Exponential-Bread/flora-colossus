@@ -5,7 +5,7 @@
 ## Installation
 
 ```bash
-npm i --save-dev flora-colossus
+pnpm i -D @3xpo/flora-colossus
 ```
 
 ## API
