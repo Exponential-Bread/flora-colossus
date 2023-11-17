@@ -93,9 +93,11 @@ describe('Walker', () => {
     it('should detect the hoisted and unhoisted instances correctly as optional/dev', () => {
       const xmlBuilderModules = modules.filter(m => m.name === 'xmlbuilder');
       // versions tested come from the lockfile, 8.2.2 is the version depended upon by plist@2.x
-      const expectedDev = xmlBuilderModules.find(m => m.path.includes("8.2.2"));
+      const expectedDev = xmlBuilderModules.find(m => m.path.includes('8.2.2'));
       // versions tested come from the lockfile, 9.0.7 is the version transitively depended upon by xml2js and plist@3.x
-      const expectedOptional = xmlBuilderModules.find(m => m.path.includes("9.0.7"));
+      const expectedOptional = xmlBuilderModules.find(m =>
+        m.path.includes('9.0.7'),
+      );
       expect(expectedDev).to.have.property('depType', DepType.DEV);
       expect(expectedOptional).to.have.property('depType', DepType.OPTIONAL);
     });
