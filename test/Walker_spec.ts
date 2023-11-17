@@ -106,8 +106,11 @@ describe('Walker', () => {
       )?.[0];
       // versions tested come from the lockfile, 9.0.7 is the version depended upon by xml2js@0.6.2
       const expectedOptional = modulesByPackage.find(
-        ([_module, pkg]) => pkg.version === '11.0.1',
+        ([_module, pkg]) => pkg.version === '9.0.7',
       )?.[0];
+
+      if (!expectedDev || !expectedOptional)
+        console.info('Modules By Package:', modulesByPackage);
 
       expect(expectedDev).to.have.property('depType', DepType.DEV);
       expect(expectedOptional).to.have.property('depType', DepType.OPTIONAL);
