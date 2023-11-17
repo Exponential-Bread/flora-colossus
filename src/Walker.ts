@@ -8,14 +8,14 @@ import { NativeModuleType } from './nativeModuleTypes';
 export type VersionRange = string;
 export interface PackageJSON {
   name: string;
-  dependencies: { [name: string]: VersionRange }
-  devDependencies: { [name: string]: VersionRange }
-  optionalDependencies: { [name: string]: VersionRange }
+  dependencies: { [name: string]: VersionRange };
+  devDependencies: { [name: string]: VersionRange };
+  optionalDependencies: { [name: string]: VersionRange };
 }
 export interface Module {
   path: string;
   depType: DepType;
-  nativeModuleType: NativeModuleType,
+  nativeModuleType: NativeModuleType;
   name: string;
 }
 
@@ -23,7 +23,7 @@ const d = debug('flora-colossus');
 
 export class Walker {
   private rootModule: string;
-  private modules: Module[];
+  private modules: Module[] = [];
   private walkHistory: Set<string> = new Set();
 
   constructor(modulePath: string) {
@@ -38,7 +38,9 @@ export class Walker {
     return path.resolve(rootPath, 'node_modules', moduleName);
   }
 
-  private async loadPackageJSON(modulePath: string): Promise<PackageJSON | null> {
+  private async loadPackageJSON(
+    modulePath: string,
+  ): Promise<PackageJSON | null> {
     const pJPath = path.resolve(modulePath, 'package.json');
     if (await fs.pathExists(pJPath)) {
       const pJ = await fs.readJson(pJPath);
@@ -50,12 +52,19 @@ export class Walker {
     return null;
   }
 
-  private async walkDependenciesForModuleInModule(moduleName: string, modulePath: string, depType: DepType) {
+  private async walkDependenciesForModuleInModule(
+    moduleName: string,
+    modulePath: string,
+    depType: DepType,
+  ) {
     let testPath = modulePath;
     let discoveredPath: string | null = null;
     let lastRelative: string | null = null;
     // Try find it while searching recursively up the tree
-    while (!discoveredPath && this.relativeModule(testPath, moduleName) !== lastRelative) {
+    while (
+      !discoveredPath &&
+      this.relativeModule(testPath, moduleName) !== lastRelative
+    ) {
       lastRelative = this.relativeModule(testPath, moduleName);
       if (await fs.pathExists(lastRelative)) {
         discoveredPath = lastRelative;
@@ -67,11 +76,15 @@ export class Walker {
       }
     }
     // If we can't find it the install is probably buggered
-    if (!discoveredPath && depType !== DepType.OPTIONAL && depType !== DepType.DEV_OPTIONAL) {
+    if (
+      !discoveredPath &&
+      depType !== DepType.OPTIONAL &&
+      depType !== DepType.DEV_OPTIONAL
+    ) {
       throw new Error(
         `Failed to locate module "${moduleName}" from "${modulePath}"
 
-        This normally means that either you have deleted this package already somehow (check your ignore settings if using electron-packager).  Or your module installation failed.`
+        This normally means that either you have deleted this package already somehow (check your ignore settings if using electron-packager).  Or your module installation failed.`,
       );
     }
     // If we can find it let's do the same thing for that module
@@ -80,26 +93,36 @@ export class Walker {
     }
   }
 
-  private async detectNativeModuleType(modulePath: string, pJ: PackageJSON): Promise<NativeModuleType> {
+  private async detectNativeModuleType(
+    modulePath: string,
+    pJ: PackageJSON,
+  ): Promise<NativeModuleType> {
     if (pJ.dependencies['prebuild-install']) {
-      return NativeModuleType.PREBUILD
+      return NativeModuleType.PREBUILD;
     } else if (await fs.pathExists(path.join(modulePath, 'binding.gyp'))) {
-      return NativeModuleType.NODE_GYP
+      return NativeModuleType.NODE_GYP;
     }
-    return NativeModuleType.NONE
+    return NativeModuleType.NONE;
   }
 
-  private async walkDependenciesForModule(modulePath: string, depType: DepType) {
+  private async walkDependenciesForModule(
+    modulePath: string,
+    depType: DepType,
+  ) {
     d('walk reached:', modulePath, ' Type is:', DepType[depType]);
     // We have already traversed this module
     if (this.walkHistory.has(modulePath)) {
       d('already walked this route');
       // Find the existing module reference
-      const existingModule = this.modules.find(module =>  module.path === modulePath) as Module;
+      const existingModule = this.modules.find(
+        module => module.path === modulePath,
+      ) as Module;
       // If the depType we are traversing with now is higher than the
       // last traversal then update it (prod superseeds dev for instance)
       if (depTypeGreater(depType, existingModule.depType)) {
-        d(`existing module has a type of "${existingModule.depType}", new module type would be "${depType}" therefore updating`);
+        d(
+          `existing module has a type of "${existingModule.depType}", new module type would be "${depType}" therefore updating`,
+        );
         existingModule.depType = depType;
       }
       return;
@@ -127,7 +150,9 @@ export class Walker {
       // npm decides it's a funny thing to put optional dependencies in the "dependencies" section
       // after install, because that makes perfect sense
       if (moduleName in pJ.optionalDependencies) {
-        d(`found ${moduleName} in prod deps of ${modulePath} but it is also marked optional`);
+        d(
+          `found ${moduleName} in prod deps of ${modulePath} but it is also marked optional`,
+        );
         continue;
       }
       await this.walkDependenciesForModuleInModule(
@@ -148,7 +173,7 @@ export class Walker {
 
     // For every dev dep, but only if we are in the root module
     if (depType === DepType.ROOT) {
-      d('we\'re still at the beginning, walking down the dev route');
+      d("we're still at the beginning, walking down the dev route");
       for (const moduleName in pJ.devDependencies) {
         await this.walkDependenciesForModuleInModule(
           moduleName,
@@ -174,7 +199,9 @@ export class Walker {
         resolve(this.modules);
       });
     } else {
-      d('tree walk in progress / completed already, waiting for existing walk to complete');
+      d(
+        'tree walk in progress / completed already, waiting for existing walk to complete',
+      );
     }
     return await this.cache;
   }
