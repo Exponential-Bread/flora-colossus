@@ -67,6 +67,7 @@
   },
   "files": [
     "lib/*",
-    "README.md"
+    "README.md",
+    "src/*"
   ]
 }
