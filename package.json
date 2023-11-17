@@ -1,23 +1,45 @@
 {
-  "name": "flora-colossus",
+  "name": "@3xpo/flora-colossus",
   "version": "2.0.0",
   "description": "Walks your node_modules tree",
   "author": "Samuel Attard",
+  "maintainers": [
+    {
+      "name": "Exponential-Workload"
+    }
+  ],
   "license": "MIT",
   "keywords": [
     "node_modules",
     "walker"
   ],
-  "main": "lib/index.js",
+  "main": "lib/index.cjs",
+  "module": "lib/index.mjs",
+  "source": "src/index.ts",
   "typings": "lib/index.d.ts",
+  "types": "lib/index.d.ts",
   "repository": "https://github.com/Exponential-Workload/flora-colossus",
+  "exports": {
+    ".": {
+      "default": "./lib/index.mjs",
+      "import": "./lib/index.mjs",
+      "node": "./lib/index.cjs",
+      "require": "./lib/index.cjs",
+      "types": "./lib/index.d.ts"
+    }
+  },
   "scripts": {
-    "build": "tsc",
+    "build": "concurrently -P \"npm:build:*\"",
+    "build:tsc": "tsc --emitDeclarationOnly",
+    "build:cjs": "npm run run_esbuild -- --format=cjs --outfile=lib/index.cjs",
+    "build:esm": "npm run run_esbuild -- --format=esm --outfile=lib/index.mjs",
+    "run_esbuild": "esbuild src/index.ts --bundle --sourcemap --platform=node",
     "prepare": "npm run build",
     "pretest": "npm run pretest:yarn",
     "pretest:yarn": "cd test/fixtures/xml2js && yarn --frozen-lockfile",
     "pretest:pnpm": "cd test/fixtures/xml2js && pnpx -y pnpm@~6.1 install --frozen-lockfile",
-    "test": "mocha --require ts-node/register test/*_spec.ts"
+    "test": "mocha --require ts-node/register test/*_spec.ts",
+    "prepublishOnly": "npm run build && npm run test"
   },
   "dependencies": {
     "debug": "^4.3.4",
@@ -30,6 +52,7 @@
     "@types/mocha": "^10.0.4",
     "@types/node": "^20.9.1",
     "chai": "^4.3.10",
+    "concurrently": "^8.2.2",
     "mocha": "^10.2.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
