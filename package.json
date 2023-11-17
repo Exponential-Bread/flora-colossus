@@ -1,5 +1,5 @@
 {
-  "name": "flora-colossus",
+  "name": "@3xpo/flora-colossus",
   "version": "2.1.1",
   "description": "Walks your node_modules tree",
   "author": "Samuel Attard",
