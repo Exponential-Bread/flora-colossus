@@ -1,5 +1,4 @@
 {
-  "plugins": ["prettier-plugin-svelte"],
   "arrowParens": "avoid",
   "singleQuote": true,
   "tabWidth": 2,
@@ -7,8 +6,5 @@
   "endOfLine": "lf",
   "quoteProps": "as-needed",
   "trailingComma": "all",
-  "semi": true,
-  "svelteAllowShorthand": true,
-  "svelteSortOrder": "scripts-options-markup-styles",
-  "svelteStrictMode": false
+  "semi": true
 }
