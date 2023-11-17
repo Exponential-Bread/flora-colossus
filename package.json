@@ -39,7 +39,7 @@
     "pretest:yarn": "cd test/fixtures/xml2js && yarn --frozen-lockfile",
     "pretest:pnpm": "cd test/fixtures/xml2js && pnpx -y pnpm@~6.1 install --frozen-lockfile",
     "test": "mocha --require ts-node/register test/*_spec.ts",
-    "release": "changelogen",
+    "release": "changelogen --release",
     "prepublishOnly": "npm run build && npm run test"
   },
   "dependencies": {
