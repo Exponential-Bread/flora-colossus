@@ -8,14 +8,14 @@ import { NativeModuleType } from './nativeModuleTypes';
 export type VersionRange = string;
 export interface PackageJSON {
   name: string;
-  dependencies: { [name: string]: VersionRange }
-  devDependencies: { [name: string]: VersionRange }
-  optionalDependencies: { [name: string]: VersionRange }
+  dependencies: { [name: string]: VersionRange };
+  devDependencies: { [name: string]: VersionRange };
+  optionalDependencies: { [name: string]: VersionRange };
 }
 export interface Module {
   path: string;
   depType: DepType;
-  nativeModuleType: NativeModuleType,
+  nativeModuleType: NativeModuleType;
   name: string;
   depth: number;
 }
@@ -24,7 +24,7 @@ const d = debug('flora-colossus');
 
 export class Walker {
   private rootModule: string;
-  private modules: Module[];
+  private modules: Module[] = [];
   private walkHistory: Set<string> = new Set();
 
   constructor(modulePath: string) {
@@ -78,13 +78,16 @@ export class Walker {
     }
   }
 
-  private async detectNativeModuleType(modulePath: string, pJ: PackageJSON): Promise<NativeModuleType> {
+  private async detectNativeModuleType(
+    modulePath: string,
+    pJ: PackageJSON,
+  ): Promise<NativeModuleType> {
     if (pJ.dependencies['prebuild-install']) {
-      return NativeModuleType.PREBUILD
+      return NativeModuleType.PREBUILD;
     } else if (await fs.pathExists(path.join(modulePath, 'binding.gyp'))) {
-      return NativeModuleType.NODE_GYP
+      return NativeModuleType.NODE_GYP;
     }
-    return NativeModuleType.NONE
+    return NativeModuleType.NONE;
   }
 
   private async walkDependenciesForModule(modulePath: string, depType: DepType, depth: number) {
@@ -93,12 +96,16 @@ export class Walker {
     if (this.walkHistory.has(modulePath)) {
       d('already walked this route');
       // Find the existing module reference
-      const existingModule = this.modules.find(module =>  module.path === modulePath) as Module;
+      const existingModule = this.modules.find(
+        module => module.path === modulePath,
+      ) as Module;
       // If the depType we are traversing with now is higher than the
       // last traversal then update it (prod superseeds dev for instance)
       // NOTE: doesn't this cause the pruning logic to to not prune dev>prod dependencies?
       if (depTypeGreater(depType, existingModule.depType)) {
-        d(`existing module has a type of "${existingModule.depType}", new module type would be "${depType}" therefore updating`);
+        d(
+          `existing module has a type of "${existingModule.depType}", new module type would be "${depType}" therefore updating`,
+        );
         existingModule.depType = depType;
       }
       // If the depth we are traversing is less, update it
@@ -131,7 +138,9 @@ export class Walker {
       // npm decides it's a funny thing to put optional dependencies in the "dependencies" section
       // after install, because that makes perfect sense
       if (moduleName in pJ.optionalDependencies) {
-        d(`found ${moduleName} in prod deps of ${modulePath} but it is also marked optional`);
+        d(
+          `found ${moduleName} in prod deps of ${modulePath} but it is also marked optional`,
+        );
         continue;
       }
       await this.walkDependenciesForModuleInModule(
@@ -154,7 +163,7 @@ export class Walker {
 
     // For every dev dep, but only if we are in the root module
     if (depType === DepType.ROOT) {
-      d('we\'re still at the beginning, walking down the dev route');
+      d("we're still at the beginning, walking down the dev route");
       for (const moduleName in pJ.devDependencies) {
         await this.walkDependenciesForModuleInModule(
           moduleName,
@@ -181,7 +190,9 @@ export class Walker {
         resolve(this.modules);
       });
     } else {
-      d('tree walk in progress / completed already, waiting for existing walk to complete');
+      d(
+        'tree walk in progress / completed already, waiting for existing walk to complete',
+      );
     }
     return await this.cache;
   }

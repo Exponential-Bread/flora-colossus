@@ -13,10 +13,11 @@ async function buildWalker(modulePath: string): Promise<Module[]> {
 describe('Walker', () => {
   let modules: Module[];
   const thisPackageDir = path.resolve(__dirname, '..');
-  const dep = (depName: string) => modules.find(module => module.name === depName);
+  const dep = (depName: string) =>
+    modules.find(module => module.name === depName);
 
   it('should save root directory correctly', () => {
-    const walker = new Walker(thisPackageDir)
+    const walker = new Walker(thisPackageDir);
     expect(walker.getRootModule()).to.equal(thisPackageDir);
   });
 
@@ -52,19 +53,30 @@ describe('Walker', () => {
 
   describe('nativeModuleType', () => {
     beforeEach(async () => {
-      modules = await buildWalker(path.join(__dirname, 'fixtures', 'native_modules'));
+      modules = await buildWalker(
+        path.join(__dirname, 'fixtures', 'native_modules'),
+      );
     });
 
     it('should detect a module that uses prebuild', () => {
-      expect(dep('native-uses-prebuild')).to.have.property('nativeModuleType', NativeModuleType.PREBUILD);
+      expect(dep('native-uses-prebuild')).to.have.property(
+        'nativeModuleType',
+        NativeModuleType.PREBUILD,
+      );
     });
 
     it('should detect a module that uses node-gyp', () => {
-      expect(dep('native-uses-node-gyp')).to.have.property('nativeModuleType', NativeModuleType.NODE_GYP);
+      expect(dep('native-uses-node-gyp')).to.have.property(
+        'nativeModuleType',
+        NativeModuleType.NODE_GYP,
+      );
     });
 
     it('should detect a module that is not native', () => {
-      expect(dep('pure-javascript-module')).to.have.property('nativeModuleType', NativeModuleType.NONE);
+      expect(dep('pure-javascript-module')).to.have.property(
+        'nativeModuleType',
+        NativeModuleType.NONE,
+      );
     });
   });
 

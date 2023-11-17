@@ -1,5 +1,4 @@
-Flora Colossus
------------
+## Flora Colossus
 
 > Walk your node_modules tree
 
