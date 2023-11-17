@@ -2,15 +2,15 @@
   "name": "xml-test",
   "license": "MIT",
   "optionalDependencies": {
-    "dbus-next": "0.6.1",
-    "mpris-service": "2.1.0",
-    "xml2js": "^0.4.19"
+    "dbus-next": "0.10.2",
+    "mpris-service": "2.1.2",
+    "xml2js": "0.6.2"
   },
   "devDependencies": {
-    "electron-packager": "^13.1.1",
-    "galactus": "^0.2.1",
-    "jimp": "^0.2.27",
-    "plist": "^2.0.1"
+    "electron-packager": "^17.1.2",
+    "galactus": "^1.0.0",
+    "jimp": "^0.22.10",
+    "plist": "^3.1.0"
   },
   "//": [
     "the following resolutions below force pnpm and yarn to not install a later version of a dependency",
