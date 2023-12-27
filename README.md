@@ -1,6 +1,6 @@
 ## Flora Colossus
 
-> Walk your node_modules tree
+> Walk your node_modules tree, with pnpm support
 
 ## Installation
 
@@ -8,12 +8,25 @@
 pnpm i -D @3xpo/flora-colossus
 ```
 
+## In an existing repo
+
+To use this in an existing repository - e.g. an electron application, simply add this to your package.json: ```json
+  "overrides": {
+    "flora-colossus": "@3xpo/flora-colossus@latest"
+  },
+  "pnpm": {
+    "overrides": {
+      "flora-colossus": "npm:@3xpo/flora-colossus@latest"
+    }
+  }
+```
+
 ## API
 
 ### Enum: `DepType`
 
 ```js
-import { DepType } from 'flora-colossus';
+import { DepType } from '@3xpo/flora-colossus';
 
 // DepType.PROD --> Production dependency
 // DepType.OPTIONAL --> Optional dependency
@@ -27,7 +40,7 @@ import { DepType } from 'flora-colossus';
 ### Class: `Walker`
 
 ```js
-import { Walker } from 'flora-colossus';
+import { Walker } from '@3xpo/flora-colossus';
 
 // modulePath is the root folder of your module
 const walker = new Walker(modulePath);
