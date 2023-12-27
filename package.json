@@ -1,6 +1,6 @@
 {
   "name": "@3xpo/flora-colossus",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Walks your node_modules tree",
   "author": "Samuel Attard",
   "maintainers": [
@@ -23,8 +23,8 @@
     ".": {
       "types": "./lib/index.d.ts",
       "import": "./lib/index.mjs",
-      "node": "./lib/index.cjs",
       "require": "./lib/index.cjs",
+      "node": "./lib/index.cjs",
       "default": "./lib/index.mjs"
     }
   },
@@ -41,8 +41,7 @@
     "test:pnpm": "npm run pretest:pnpm && npm run test-pkg",
     "test:yarn": "npm run pretest:yarn && npm run test-pkg",
     "release": "changelogen --release",
-    "prepublishOnly": "node publish-script --pre && git push && git push --tags && npm run build && npm run test",
-    "postpublish": "node publish-script --post"
+    "prepublishOnly": "git push && git push --tags && npm run build && npm run test"
   },
   "dependencies": {
     "debug": "^4.3.4",
